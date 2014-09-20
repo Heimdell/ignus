@@ -14,4 +14,4 @@ This is a toy compiler of dependently-typed lambda calculus - a programming lang
 
 * `(a : A) -> b` - an lambda function from variable `a` of type `A` to expression `b` - a `b` ~~could~~ should contain refs to `a`.
 
-* `(a : A) => b` - a type of functions from `A` to `b` (pi-type). Note, `b` could be dependent on `a` - there is the "dependecy" comes from.
+* `(a : A) => b` - a type of functions from `A` to `b` (pi-type). Note, `b` could mention `a` - there is the "dependency" comes from.
