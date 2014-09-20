@@ -49,7 +49,7 @@ body `substantiate` (name, value) =
             substantiateDep (:=>) a a' b
 
   where
-    -- To evade name clash we inserting a new var in place of function arg
+    -- To evade name clash we insert a new var in place of function arg
     --  along its body.
     substantiateDep (~>) a a' b =
         let 
