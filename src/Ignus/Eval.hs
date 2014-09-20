@@ -127,7 +127,7 @@ normalize expr = ["evaluating", show expr] `decorateError`
             body `substantiate` (arg, x)
 
         g :@ y ->
-            (x ==> g) :@ (x ==> y)
+            (x ==> (y ==> g))
 
         Var _ ->
             f
