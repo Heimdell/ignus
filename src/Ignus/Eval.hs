@@ -130,7 +130,7 @@ normalize expr = ["evaluating", show expr] `decorateError`
             (x ==> g) :@ (x ==> y)
 
         Var _ ->
-            f :@ x
+            f
 
         Universe _ ->
             f
