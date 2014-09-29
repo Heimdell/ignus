@@ -118,9 +118,11 @@ normalize expr = ["evaluating", show expr] `decorateError`
         Var      _ -> f
         Universe _ -> f
 
-    normalizeDep (~>) a a' b = a `hasType` a' |- do
+    normalizeDep (~>) a a' b = do
         a'' <- normalize a'
-        b'  <- normalize b
-            
-        return $ (a, a'') ~> b'
+
+        a `hasType` a' |- do
+            b'  <- normalize b
+                
+            return $ (a, a'') ~> b'
 
