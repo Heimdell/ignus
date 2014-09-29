@@ -15,6 +15,7 @@ module Ignus.C
     , printf
     , decorateError
     , (|-)
+    , (|>)
     )
 where  
 

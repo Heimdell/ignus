@@ -11,7 +11,8 @@ typeOf :: Expr -> C Expr
 typeOf expr = ["typechecking", show expr] `decorateError` 
     case expr of
         f :@ x -> do
-            [x', f'] <- mapM typeOf [x, f]
+            x' <- typeOf x
+            f' <- typeOf f
 
             case f' of             
                 (a, a') :=> b' -> do
@@ -41,8 +42,7 @@ typeOf expr = ["typechecking", show expr] `decorateError`
 
         (a, a') :-> b -> do
 
-            -- if the `a'` is some invalid object, it will crash here
-            -- (the result is ignored)
+            -- check, if a' has any type at all, ignoring it
             typeOf a'
 
             b' <- a `hasType` a' |- typeOf b
@@ -69,11 +69,8 @@ universeOf expr = ["finding universe of", show expr] `decorateError`
             
             universeOf type_
 
-        (a, a') :-> b ->
-            universeOfDep a a' b
-
-        (a, a') :=> b ->
-            universeOfDep a a' b
+        (a, a') :-> b -> universeOfDep a a' b
+        (a, a') :=> b -> universeOfDep a a' b
 
   where
     -- functions and pi-types threated undistinctively here
@@ -105,35 +102,21 @@ normalize expr = ["evaluating", show expr] `decorateError`
         Var name -> do
             result <- lookupVarValue name
 
-            case result of
-                Nothing ->
-                    return expr
+            result |>
+                maybe (return expr) normalize
 
-                Just other ->
-                    normalize other
-
-        (a, a') :-> b -> 
-            normalizeDep (:->) a a' b
-
-        (a, a') :=> b -> 
-            normalizeDep (:=>) a a' b
+        (a, a') :-> b -> normalizeDep (:->) a a' b
+        (a, a') :=> b -> normalizeDep (:=>) a a' b
 
   where
     x ==> f = case f of
-        (arg, type_) :-> body ->
-            body `substantiate` (arg, x)
+        (arg, type_) :-> body -> body `substantiate` (arg, x)
+        (arg, type_) :=> body -> body `substantiate` (arg, x)
 
-        (arg, type_) :=> body ->
-            body `substantiate` (arg, x)
+        g :@ y -> (x ==> (y ==> g))
 
-        g :@ y ->
-            (x ==> (y ==> g))
-
-        Var _ ->
-            f
-
-        Universe _ ->
-            f
+        Var      _ -> f
+        Universe _ -> f
 
     normalizeDep (~>) a a' b = a `hasType` a' |- do
         a'' <- normalize a'

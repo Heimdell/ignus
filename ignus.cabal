@@ -20,6 +20,6 @@ library
   exposed-modules:     Ignus
   -- other-modules:       
   -- other-extensions:    
-  build-depends:       base >=4.7 && <4.8, data-fix, mtl
+  build-depends:       base >=4.7 && <4.8, mtl
   hs-source-dirs:      src
   default-language:    Haskell2010
